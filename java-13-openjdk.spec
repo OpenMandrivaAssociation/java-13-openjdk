@@ -18,16 +18,17 @@
 # right
 %define oldmajor %(echo $((%{major}-1)))
 
-Name:		java-12-openjdk
-Version:	12.0.1.ga
-Release:	2
+Name:		java-13-openjdk
+Version:	13.0.33
+Release:	1
 Summary:	Java Runtime Environment (JRE) %{major}
 Group:		Development/Languages
 License:	GPLv2, ASL 1.1, ASL 2.0, LGPLv2.1
 URL:		http://openjdk.java.net/
 # Source must be packages from upstream's hg repositories using the
 # update_package.sh script
-Source0:	jdk-updates-jdk%{major}u-jdk-%{ver}-%{minor}.tar.xz
+# PROJECT_NAME=jdk-updates REPO_NAME=jdk13u VERSION=jdk-13+33 ./generate_source_tarball.sh
+Source0:	jdk-updates-jdk%{major}u-jdk-%{major}+%{minor}.tar.xz
 # Extra tests
 Source50:	TestCryptoLevel.java
 Source51:	TestECDSA.java
@@ -47,6 +48,7 @@ Patch1001:	openjdk-11-clang-bug-40543.patch
 Patch1002:	java-12-compile.patch
 Patch1003:	java-12-buildfix.patch
 Patch1004:	openjdk-12-system-harfbuzz.patch
+Patch1005:	openjdk-13-fix-build.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	binutils
@@ -216,6 +218,10 @@ fi
 
 
 %build
+# YYYYYYYUUUUUCCCCCCCKKKKKK! The build process really needs more than
+# 1024 files open at the same time!
+ulimit -Sn 65536
+
 # With LTO enabled, /tmp (tmpfs) tends to run out of space.
 # Temporary LTO files for openjdk 12 easily take 50+ GB.
 # Hopefully the build directory has more free space.
@@ -348,6 +354,13 @@ chmod +x %{buildroot}%{_sysconfdir}/profile.d/*.*sh
 %{_mandir}/man1/keytool.1*
 %{_mandir}/man1/rmid.1*
 %{_mandir}/man1/rmiregistry.1*
+%{_mandir}/man1/jaotc.1*
+%{_mandir}/man1/jdeprscan.1*
+%{_mandir}/man1/jfr.1*
+%{_mandir}/man1/jhsdb.1*
+%{_mandir}/man1/jlink.1*
+%{_mandir}/man1/jmod.1*
+%{_mandir}/man1/jshell.1*
 %{_sysconfdir}/profile.d/*
 %else
 %dir %{_jvmdir}/java-%{major}-openjdk/man
