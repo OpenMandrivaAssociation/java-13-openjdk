@@ -354,7 +354,6 @@ chmod +x %{buildroot}%{_sysconfdir}/profile.d/*.*sh
 %{_mandir}/man1/keytool.1*
 %{_mandir}/man1/rmid.1*
 %{_mandir}/man1/rmiregistry.1*
-%{_mandir}/man1/jaotc.1*
 %{_mandir}/man1/jdeprscan.1*
 %{_mandir}/man1/jfr.1*
 %{_mandir}/man1/jhsdb.1*
@@ -377,6 +376,7 @@ chmod +x %{buildroot}%{_sysconfdir}/profile.d/*.*sh
 %{_jvmdir}/java-%{major}-openjdk/include
 %ifnarch %{ix86} %{arm}
 %{_jvmdir}/java-%{major}-openjdk/bin/jaotc
+%{_mandir}/man1/jaotc.1*
 %endif
 %{_jvmdir}/java-%{major}-openjdk/bin/jar
 %{_jvmdir}/java-%{major}-openjdk/bin/jarsigner
