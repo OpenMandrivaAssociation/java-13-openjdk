@@ -83,7 +83,6 @@ BuildRequires:	nss-static-devel
 %ifnarch %{jit_arches}
 BuildRequires:	pkgconfig(libffi)
 %endif
-BuildRequires:	java-%{oldmajor}-openjdk-devel
 
 # cacerts build requirement.
 BuildRequires:	openssl
@@ -92,8 +91,15 @@ BuildRequires:	openssl
 Provides:	jre-current = %{EVRD}
 Provides:	java-current = %{EVRD}
 %endif
-%if ! %{with bootstrap}
+%if %{with bootstrap}
+# In a bootstrap build, we can't have jmod(*) dependencies
+# because openjdk 12's jmod has no idea how to read openjdk
+# 13's module files.
+BuildConflicts:	rpm-javamacros
+BuildRequires:	java-%{oldmajor}-openjdk-devel
+%else
 BuildRequires:	rpm-javamacros
+BuildRequires:	java-%{major}-openjdk-devel
 %endif
 
 # For compatibility with JPackage/Fedora/Mageia packaging
