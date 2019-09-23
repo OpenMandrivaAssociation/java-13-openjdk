@@ -97,6 +97,8 @@ Provides:	java-current = %{EVRD}
 # 13's module files.
 BuildConflicts:	rpm-javamacros
 BuildRequires:	java-%{oldmajor}-openjdk-devel
+# Let's provide some basics...
+Provides:	jmod(java.base) = %{EVRD}
 %else
 BuildRequires:	rpm-javamacros
 BuildRequires:	java-%{major}-openjdk-devel
