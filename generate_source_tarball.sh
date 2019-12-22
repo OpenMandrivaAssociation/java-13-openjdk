@@ -4,7 +4,6 @@
 # Example:
 # When used from local repo set REPO_ROOT pointing to file:// with your repo
 # if your local repo follows upstream forests conventions, you may be enough by setting OPENJDK_URL
-# if you wont to use local copy of patch PR2126 set path to it to PR2126 variable
 #
 # In any case you have to set PROJECT_NAME REPO_NAME and VERSION. eg:
 # PROJECT_NAME=jdk
@@ -26,13 +25,6 @@
 # level folder, name is created, based on parameter
 #
 
-if [ ! "x$PR2126" = "x" ] ; then
-  if [ ! -f "$PR2126" ] ; then
-    echo "You have specified PR2126 as $PR2126 but it does not exists. exiting"
-    exit 1
-  fi
-fi
-
 set -e
 
 OPENJDK_URL_DEFAULT=http://hg.openjdk.java.net
@@ -48,7 +40,6 @@ if [ "x$1" = "xhelp" ] ; then
     echo "FILE_NAME_ROOT - name of the archive, minus extensions (optional; defaults to PROJECT_NAME-REPO_NAME-VERSION)"
     echo "REPO_ROOT - the location of the Mercurial repository to archive (optional; defaults to OPENJDK_URL/PROJECT_NAME/REPO_NAME)"
     echo "TO_COMPRESS - what part of clone to pack (default is openjdk)"
-    echo "PR2126 - the path to the PR2126 patch to apply (optional; downloaded if unavailable)"
     exit 1;
 fi
 
@@ -121,23 +112,6 @@ if [ "$PROJECT_NAME" != "hg" ]; then
 fi
 
 pushd "${FILE_NAME_ROOT}"
-    if [ -d openjdk/src ]; then 
-        pushd openjdk
-            echo "Removing EC source code we don't build"
-            CRYPTO_PATH=src/jdk.crypto.ec/share/native/libsunec/impl
-            rm -vrf $CRYPTO_PATH
-            echo "Syncing EC list with NSS"
-            if [ "x$PR2126" = "x" ] ; then
-                # From IcedTea: http://icedtea.classpath.org/hg/icedtea?cmd=changeset;node=8d2c9a898f50
-                # http://icedtea.classpath.org/bugzilla/show_bug.cgi?id=2126
-		PR2126="$(ls ../../pr2126*.patch)"
-            fi;
-            echo "Applying ${PR2126}"
-            patch -Np1 < $PR2126
-            find . -name '*.orig' -exec rm -vf '{}' ';'
-        popd
-    fi
-
     echo "Compressing remaining forest"
     if [ "X$COMPRESSION" = "Xxz" ] ; then
         SWITCH=cJf

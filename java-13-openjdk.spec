@@ -19,8 +19,8 @@
 %define oldmajor %(echo $((%{major}-1)))
 
 Name:		java-13-openjdk
-Version:	13.0.33
-Release:	2
+Version:	13.0.1.9
+Release:	1
 Summary:	Java Runtime Environment (JRE) %{major}
 Group:		Development/Languages
 License:	GPLv2, ASL 1.1, ASL 2.0, LGPLv2.1
@@ -28,7 +28,7 @@ URL:		http://openjdk.java.net/
 # Source must be packages from upstream's hg repositories using the
 # update_package.sh script
 # PROJECT_NAME=jdk-updates REPO_NAME=jdk13u VERSION=jdk-13+33 ./generate_source_tarball.sh
-Source0:	jdk-updates-jdk%{major}u-jdk-%{major}+%{minor}.tar.xz
+Source0:	jdk-updates-jdk%{major}u-jdk-13.0.1+%{minor}.tar.xz
 # Extra tests
 Source50:	TestCryptoLevel.java
 Source51:	TestECDSA.java
@@ -49,6 +49,7 @@ Patch1002:	java-12-compile.patch
 Patch1003:	java-12-buildfix.patch
 Patch1004:	openjdk-12-system-harfbuzz.patch
 Patch1005:	openjdk-13-fix-build.patch
+Patch1006:	java-13-system-nss.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	binutils
@@ -212,7 +213,7 @@ if ! bash ../configure \
 	--with-stdc++lib=dynamic \
 	--with-extra-cflags="$EXTRA_CFLAGS" \
 	--with-extra-cxxflags="$EXTRA_CXXFLAGS" \
-	--with-extra-ldflags="%{ldflags}" \
+	--with-extra-ldflags="%{ldflags} -fuse-ld=bfd" \
 	--with-num-cores="$NUM_PROC" \
 	--with-jobs="$NUM_PROC" \
 %ifarch %{x86_64}
