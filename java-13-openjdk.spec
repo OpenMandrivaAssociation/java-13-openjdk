@@ -1,6 +1,6 @@
 # Use gcc instead of clang
 %bcond_without gcc
-%bcond_without system_jdk
+%bcond_with system_jdk
 # Without bootstrap, the package BuildRequires
 # rpm-javamacros (which in turn requires this package)
 # so jmod(*) and java(*) Provides: can be generated correctly.
@@ -12,14 +12,16 @@
 
 %define major %(echo %{version} |cut -d. -f1)
 %define ver %(echo %{version} |rev |cut -d. -f2- |rev)
-%define minor %(echo %{version} |rev |cut -d. -f1 |rev)
+%define minor ga
+# On Non-GA: %(echo %{version} |rev |cut -d. -f1 |rev)
+
 # OpenJDK X requires OpenJDK >= X-1 to build -- so we need
 # to determine the previous version to get build dependencies
 # right
 %define oldmajor %(echo $((%{major}-1)))
 
 Name:		java-13-openjdk
-Version:	13.0.1.9
+Version:	13.0.2
 Release:	1
 Summary:	Java Runtime Environment (JRE) %{major}
 Group:		Development/Languages
@@ -28,7 +30,7 @@ URL:		http://openjdk.java.net/
 # Source must be packages from upstream's hg repositories using the
 # update_package.sh script
 # PROJECT_NAME=jdk-updates REPO_NAME=jdk13u VERSION=jdk-13+33 ./generate_source_tarball.sh
-Source0:	jdk-updates-jdk%{major}u-jdk-13.0.1+%{minor}.tar.xz
+Source0:	jdk-updates-jdk%{major}u-jdk-13.0.2-%{minor}.tar.zst
 # Extra tests
 Source50:	TestCryptoLevel.java
 Source51:	TestECDSA.java
@@ -42,6 +44,8 @@ Patch2:		https://src.fedoraproject.org/rpms/java-openjdk/raw/master/f/rh1648644-
 Patch3:		https://src.fedoraproject.org/rpms/java-openjdk/raw/master/f/rh649512-remove_uses_of_far_in_jpeg_libjpeg_turbo_1_4_compat_for_jdk10_and_up.patch
 Patch4:		https://src.fedoraproject.org/rpms/java-openjdk/raw/master/f/pr3183-rh1340845-support_fedora_rhel_system_crypto_policy.patch
 Patch5:		https://src.fedoraproject.org/rpms/java-openjdk/raw/master/f/pr1983-rh1565658-support_using_the_system_installation_of_nss_with_the_sunec_provider_jdk11.patch
+# Patches from upstream
+Patch100:	https://github.com/openjdk/panama-foreign/commit/af5c725b.patch
 # Patches from OpenMandriva
 Patch1000:	openjdk-11-fix-aarch64.patch
 Patch1001:	openjdk-11-clang-bug-40543.patch
@@ -50,6 +54,7 @@ Patch1003:	java-12-buildfix.patch
 Patch1004:	openjdk-12-system-harfbuzz.patch
 Patch1005:	openjdk-13-fix-build.patch
 Patch1006:	java-13-system-nss.patch
+Patch1007:	openjdk-13-gcc10.patch
 BuildRequires:	autoconf
 BuildRequires:	automake
 BuildRequires:	binutils
@@ -183,6 +188,14 @@ EXTRA_CXXFLAGS="$EXTRA_CXXFLAGS -mstack-alignment=16"
 
 NUM_PROC="$(getconf _NPROCESSORS_ONLN)"
 [ -z "$NUM_PROC" ] && NUM_PROC=8
+
+%if %{with gcc}
+export NM=gcc-nm
+export AR=gcc-ar
+%else
+export NM=llvm-nm
+export AR=llvm-ar
+%endif
 
 mkdir build
 cd build

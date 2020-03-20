@@ -28,7 +28,7 @@
 set -e
 
 OPENJDK_URL_DEFAULT=http://hg.openjdk.java.net
-COMPRESSION_DEFAULT=xz
+COMPRESSION_DEFAULT=zst
 
 if [ "x$1" = "xhelp" ] ; then
     echo -e "Behaviour may be specified by setting the following variables:\n"
@@ -115,10 +115,16 @@ pushd "${FILE_NAME_ROOT}"
     echo "Compressing remaining forest"
     if [ "X$COMPRESSION" = "Xxz" ] ; then
         SWITCH=cJf
+	SUFFIX=".${COMPRESSION}"
+    elif [ "X$COMPRESSION" = "Xzst" ]; then
+        SWITCH=cf
+        SUFFIX=""
     else
         SWITCH=czf
+	SUFFIX=".${COMPRESSION}"
     fi
-    tar --exclude-vcs -$SWITCH ${FILE_NAME_ROOT}.tar.${COMPRESSION} $TO_COMPRESS
+    tar --exclude-vcs -$SWITCH ${FILE_NAME_ROOT}.tar${SUFFIX} $TO_COMPRESS
+    [ "X$COMPRESSION" = "Xzst" ] && zstd -19 --rm ${FILE_NAME_ROOT}.tar
     mv ${FILE_NAME_ROOT}.tar.${COMPRESSION}  ..
 popd
 echo "Done. You may want to remove the uncompressed version - $FILE_NAME_ROOT."

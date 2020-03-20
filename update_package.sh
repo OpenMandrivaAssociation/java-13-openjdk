@@ -6,9 +6,9 @@ set -e
 # TAPSET
 
 export PROJECT_NAME="hg"
-export REPO_NAME="icedtea12"
-export VERSION="e9b81cef3b83"
-export COMPRESSION=xz
+export REPO_NAME="icedtea14"
+export VERSION="2663d0ce795a"
+export COMPRESSION=zst
 export OPENJDK_URL=http://icedtea.classpath.org
 export FILE_NAME_ROOT=${PROJECT_NAME}-${REPO_NAME}-${VERSION}
 export TO_COMPRESS="*/tapset"
@@ -39,11 +39,11 @@ export PROJECT_NAME="jdk-updates"
 # Current tree -- will update to 13 at some point, see
 # http://hg.openjdk.java.net/jdk/
 # for current options
-export REPO_NAME="jdk12u"
+export REPO_NAME="jdk13u"
 # For latest tag, see http://hg.openjdk.java.net/jdk/jdk12/tags
 # Or for Shenandoah branch, http://hg.openjdk.java.net/shenandoah/jdk12/tags
-export VERSION="jdk-12.0.1-ga"
-export COMPRESSION=xz
+export VERSION="jdk-13.0.2-ga"
+export COMPRESSION=zst
 # unset tapsets overrides
 export OPENJDK_URL=""
 export TO_COMPRESS=""
