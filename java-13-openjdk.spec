@@ -26,7 +26,7 @@ Release:	2
 Summary:	Java Runtime Environment (JRE) %{major}
 Group:		Development/Languages
 License:	GPLv2, ASL 1.1, ASL 2.0, LGPLv2.1
-URL:		http://openjdk.java.net/
+URL:		https://openjdk.java.net/
 # Source must be packages from upstream's hg repositories using the
 # update_package.sh script
 # PROJECT_NAME=jdk-updates REPO_NAME=jdk13u VERSION=jdk-13+33 ./generate_source_tarball.sh
